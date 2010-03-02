@@ -355,7 +355,7 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
 
             if (m_bIsSummoningWhelps)
             {
-                if (m_uiSummonCount < MAX_WHELP)
+                if (m_uiSummonCount < m_uiMaxWhelps)
                 {
                     if (m_uiWhelpTimer < uiDiff)
                     {
