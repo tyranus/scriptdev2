@@ -59,6 +59,7 @@ struct Script
     bool (*pEffectDummyGameObj  )(Unit*, uint32, SpellEffectIndex, GameObject*);
     bool (*pEffectDummyItem     )(Unit*, uint32, SpellEffectIndex, Item*);
     bool (*pEffectAuraDummy     )(const Aura*, bool);
+    bool (*pEffectAuraDummy     )(const Aura*, bool);
 
     CreatureAI* (*GetAI)(Creature*);
     InstanceData* (*GetInstanceData)(Map*);

@@ -1,7 +1,11 @@
+DELETE FROM `creature_template_addon` WHERE `entry` IN (33113,33114);
+DELETE FROM `creature_template_addon` WHERE `entry` IN (33113,33114);
 INSERT INTO `creature_template_addon` (`entry` ,`mount` ,`bytes1` ,`bytes2` ,`emote` ,`moveflags` ,`vehicle_id` ,`passengers` ,`auras` )VALUES
 ('33113', '0', '0', '0', '0', '0', '340', NULL , NULL ),
 ('33114', '0', '0', '0', '0', '0', '341', NULL , NULL );
 
+DELETE FROM `vehicle_seat_data`  WHERE `seat` IN(3043,3065,3071,3072,3070,3044,3075,3076); 
+DELETE FROM `vehicle_seat_data`  WHERE `seat` IN(3043,3065,3071,3072,3070,3044,3075,3076); 
 INSERT INTO `vehicle_seat_data` (`seat`, `flags`) VALUES
 ('3043', '0'), ('3065', '0'), ('3071', '0'), ('3072', '0'),
 ('3070', '0'), ('3044', '0'), ('3075', '0'), ('3076', '0');
