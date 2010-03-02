@@ -509,20 +509,6 @@ struct MANGOS_DLL_DECL instance_naxxramas : public ScriptedInstance
         if (BlaumeuxDead && RivendareDead && ZeliekDead && KorthazzDead)
         {
             SetData(TYPE_FOUR_HORSEMEN, DONE);
-    
-            AchievementEntry const *AchievHorsemen = GetAchievementStore()->LookupEntry(instance->IsRegularDifficulty() ? ACHIEVEMENT_HORSEMEN : H_ACHIEVEMENT_HORSEMEN);
-            if(AchievHorsemen && this)
-            {
-                Map::PlayerList const &lPlayers = instance->GetPlayers();
-                if (!lPlayers.isEmpty())
-                {
-                    for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-                    {
-                        if (Player* pPlayer = itr->getSource())
-                            pPlayer->GetAchievementMgr().CompletedAchievement(AchievHorsemen);
-                    }
-                }
-            }
         }
     }
     
@@ -640,33 +626,6 @@ struct MANGOS_DLL_DECL instance_naxxramas : public ScriptedInstance
                 return m_uiHeiganGUID;
         }
         return 0;
-    }
-
-    void Update(uint32 uiDiff)
-    {
-        if (BlaumeuxDead || RivendareDead || ZeliekDead || KorthazzDead)
-        {
-            if (DeadTimer < 15000 && UpdateCheck)
-            {
-                if (BlaumeuxDead && RivendareDead && ZeliekDead && KorthazzDead)
-                {
-                    AchievementEntry const *AchievHorsemen = GetAchievementStore()->LookupEntry(instance->IsRegularDifficulty() ? ACHIEVEMENT_TOGETHER : H_ACHIEVEMENT_TOGETHER);
-                    if(AchievHorsemen && this)
-                    {
-                        Map::PlayerList const &lPlayers = instance->GetPlayers();
-                        if (!lPlayers.isEmpty())
-                        {
-                            for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-                            {
-                                if (Player* pPlayer = itr->getSource())
-                                    pPlayer->GetAchievementMgr().CompletedAchievement(AchievHorsemen);
-                            }
-                        }
-                    }
-                    UpdateCheck = false;
-                }
-            }else DeadTimer += uiDiff;
-        }
     }
 };
 
