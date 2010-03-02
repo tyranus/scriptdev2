@@ -29,4 +29,6 @@ pkgdata_DATA = \
 	scriptdev2_create_database.sql \
 	scriptdev2_create_structure_mysql.sql \
 	scriptdev2_create_structure_pgsql.sql \
-	scriptdev2_script_full.sql
+	scriptdev2_script_full.sql \
+	full_ScriptDev2_Project_Updates.sql \
+	full_mangos_Project_Updates.sql
