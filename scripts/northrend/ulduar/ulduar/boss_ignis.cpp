@@ -48,7 +48,7 @@ enum
     AURA_SCORCH                    = 62548,
     AURA_SCORCH_H                = 63476,
     //NPC ids
-    MOB_IRON_CONSTRUCT            = 33121,
+    MOB_IRON_CONSTRUCT            = 34085,
     MOB_SCORCH_TARGET            = 33221,
 };
 
