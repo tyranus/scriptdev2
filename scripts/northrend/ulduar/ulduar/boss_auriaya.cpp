@@ -31,10 +31,10 @@ enum
     //auriaya
     SPELL_BERSERK                = 54312,
     SPELL_GUARDIAN_SWARM        = 64396,
-    SPELL_SENTINEL_BLAST        = 64389,
-    SPELL_SENTINEL_BLAST_H        = 64678,
-    SPELL_SONIC_SCREECH            = 64422,
-    SPELL_SONIC_SCREECH_H        = 64688,
+    SPELL_SENTINEL_BLAST        = 59772,
+    SPELL_SENTINEL_BLAST_H        = 59772,
+    SPELL_SONIC_SCREECH            = 62872,
+    SPELL_SONIC_SCREECH_H        = 62872,
     SPELL_FEAR                    = 64386,
     //feral defender
     SPELL_FEIGN_DEATH            = 57685,
