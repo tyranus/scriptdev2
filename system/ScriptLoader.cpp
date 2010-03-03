@@ -297,6 +297,10 @@ extern void AddSC_boss_malygos();                           // Eye of Eternity
 extern void AddSC_instance_eye_of_eternity();
 extern void AddSC_boss_sartharion();                        //obsidian_sanctum
 extern void AddSC_instance_obsidian_sanctum();
+extern void AddSC_instance_vault_of_archavon();             //vault_of_archavon
+extern void AddSC_boss_koralon();
+extern void AddSC_boss_emalon();
+extern void AddSC_boss_archavon();
 extern void AddSC_boss_bjarngrim();                         //Ulduar, halls_of_lightning
 extern void AddSC_boss_ionar();
 extern void AddSC_boss_loken();
@@ -723,6 +727,10 @@ void AddScripts()
     AddSC_instance_nexus();
     AddSC_boss_sartharion();                                //obsidian_sanctum
     AddSC_instance_obsidian_sanctum();
+	AddSC_instance_vault_of_archavon();                     //vault_of_archavon
+    AddSC_boss_koralon();
+    AddSC_boss_emalon();
+    AddSC_boss_archavon();
     AddSC_boss_bjarngrim();                                 //Ulduar, halls_of_lightning
     AddSC_boss_ionar();
     AddSC_boss_loken();
