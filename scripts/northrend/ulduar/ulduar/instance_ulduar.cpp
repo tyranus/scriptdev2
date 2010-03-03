@@ -24,11 +24,6 @@ EndScriptData */
 #include "precompiled.h"
 #include "ulduar.h"
 
-//Flame leviathan coordinates to summon - its vehicle 
-#define LEVIATHAN_X  458.518
-#define LEVIATHAN_Y  -11.585
-#define LEVIATHAN_Z  409.803
-#define LEVIATHAN_O  3.136
 
 struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 {
@@ -197,7 +192,6 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
             case GO_LEVIATHAN_GATE:
                 m_uiLeviathanGateGUID = pGo->GetGUID();
                 //Summon Flame leviathan - its vehicle
-                pGo->SummonVehicle(NPC_LEVIATHAN, LEVIATHAN_X, LEVIATHAN_Y, LEVIATHAN_Z, LEVIATHAN_O);
                 break;
         }
     }

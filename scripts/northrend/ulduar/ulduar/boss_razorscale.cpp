@@ -360,7 +360,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 
     void Reset()
     {
-        Fireball_Timer = 10000;  // 10 secs for the first, fckin spam after that ~2secs
+        Fireball_Timer = 30000;  // 10 secs for the first, fckin spam after that ~2secs
         Devouring_Flame_Timer = 18000; // 18 secs first, 12 seconds after
         wave1_spawn = 7000; // 54
         wave2_spawn = 9000; //52
@@ -406,7 +406,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(target, m_bIsRegularMode ? SPELL_FIREBALL : SPELL_FIREBALL_H);
-            Fireball_Timer = 2000;
+            Fireball_Timer = 30000;
         }else Fireball_Timer -= diff;   
 
         if (Devouring_Flame_Timer < diff && !grounded)
@@ -512,7 +512,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
             m_creature->GetMap()->CreatureRelocation(m_creature, RazorscaleBossX[1], RazorscaleBossY[1], RazorscaleBossZ[1], 0.0f);
             m_creature->SendMonsterMove(RazorscaleBossX[1], RazorscaleBossY[1], RazorscaleBossZ[1], SPLINETYPE_NORMAL, m_creature->GetSplineFlags(), 1);
             grounded = false;
-            Fireball_Timer = 10000;
+            Fireball_Timer = 30000;
             Devouring_Flame_Timer = 18000;
             wave1_spawn = 7000;
             wave2_spawn = 9000;
@@ -526,9 +526,9 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
             airphase = false;
             grounded = false;
             Devouring_Flame_Timer = 12000;
-            Flame_Buffet_Timer = 10000; //every 10 secs
+            Flame_Buffet_Timer = 120000; //every 2 min
             Fuse_Armor_Timer = 13000; //every ~13
-            Flame_Breath_Timer = 6000; //every 14
+            Flame_Breath_Timer = 10000; //every 14
             SetCombatMovement(true);
             m_creature->GetMotionMaster()->MoveChase(m_creature->getVictim());
         }
@@ -542,7 +542,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
         if (Flame_Buffet_Timer < diff && !airphase)
         {
             DoCast(m_creature, m_bIsRegularMode ? SPELL_FLAME_BUFFET : SPELL_FLAME_BUFFET_H);
-            Flame_Buffet_Timer = 13000;
+            Flame_Buffet_Timer = 125000;
         }else Flame_Buffet_Timer -= diff;
 
         if (Flame_Breath_Timer < diff && !airphase)

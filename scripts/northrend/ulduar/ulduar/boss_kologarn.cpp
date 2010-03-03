@@ -35,7 +35,7 @@ enum
     SPELL_ONE_ARMED_SMASH_H        = 64006,
     SPELL_STONE_SHOUT            = 63716,
     SPELL_STONE_SHOUT_H            = 64005,
-    SPELL_PETRIFYING_BREATH        = 62030,
+    SPELL_PETRIFYING_BREATH        = 64227,
     SPELL_PETRIFYING_BREATH_H    = 63980,
     //left arm
     SPELL_SHOCKWAVE                = 63783,
