@@ -210,8 +210,8 @@ struct MANGOS_DLL_DECL boss_ignisAI : public ScriptedAI
         Flame_Jets_Timer = 20000;
         Slag_Pot_Timer = 25000;
         Slag_Pot_Dmg_Timer = 26000;
-        Scorch_Timer = 14000;
-        Summon_Timer = 10000;
+        Scorch_Timer = 40000;
+        Summon_Timer = 50000;
         PotDmgCount = 0;
         m_uiPotTarget = 0;
         m_lIronConstructGUIDList.clear();
@@ -290,7 +290,7 @@ struct MANGOS_DLL_DECL boss_ignisAI : public ScriptedAI
                     pTemp->AI()->AttackStart(pTarget);
                     m_lIronConstructGUIDList.push_back(pTemp->GetGUID());
                 }
-            Summon_Timer = 40000;
+            Summon_Timer = 50000;
             if (m_creature->HasAura(BUFF_STRENGHT_OF_CREATOR))
                     m_creature->GetAura(BUFF_STRENGHT_OF_CREATOR, EFFECT_INDEX_0)->modStackAmount(+1);
                 else
@@ -305,7 +305,7 @@ struct MANGOS_DLL_DECL boss_ignisAI : public ScriptedAI
                 pTemp->AddThreat(m_creature->getVictim(),0.0f);
                 pTemp->AI()->AttackStart(m_creature->getVictim());
             }
-            Scorch_Timer = 28000;
+            Scorch_Timer = 45000;
         }else Scorch_Timer -= diff;
         
         DoMeleeAttackIfReady();
