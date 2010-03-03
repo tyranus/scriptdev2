@@ -43,7 +43,7 @@ enum
     SPELL_LIGHT_BOMB_H        = 65121,
     SPELL_GRAVITY_BOMB        = 63024,
     SPELL_GRAVITY_BOMB_H    = 64234,
-    SPELL_ENRAGE            = 47008,
+    SPELL_ENRAGE            = 54312,
     SPELL_STUN                = 3618,
 
     //heart of the deconstructor

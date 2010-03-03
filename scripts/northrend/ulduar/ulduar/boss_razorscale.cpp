@@ -34,7 +34,7 @@ enum
     SPELL_WING_BUFFET            = 62666,
     SPELL_STUN                    = 62794,
     //both
-    SPELL_BERSERK                = 47008,
+    SPELL_BERSERK                = 54312,
     DEVOURING_FLAME_VISUAL        = 63236,
     SPELL_FLAME_BREATH            = 63317,
     SPELL_FLAME_BREATH_H        = 64021,

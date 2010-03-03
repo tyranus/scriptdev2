@@ -29,7 +29,7 @@ enum
     //yells
 
     //auriaya
-    SPELL_BERSERK                = 47008,
+    SPELL_BERSERK                = 54312,
     SPELL_GUARDIAN_SWARM        = 64396,
     SPELL_SENTINEL_BLAST        = 64389,
     SPELL_SENTINEL_BLAST_H        = 64678,

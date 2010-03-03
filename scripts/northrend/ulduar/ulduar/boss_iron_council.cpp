@@ -29,7 +29,7 @@ enum
     //yells
 
     //all
-    SPELL_BERSERK                = 47008,
+    SPELL_BERSERK                = 54312,
     SPELL_SUPERCHARGE            = 61920,
     //steelbreaker
     SPELL_HIGH_VOLTAGE            = 61890,
