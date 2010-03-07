@@ -345,6 +345,11 @@ extern void AddSC_boss_black_knight();
 extern void AddSC_boss_grand_champions();
 extern void AddSC_instance_trial_of_the_champion();
 extern void AddSC_trial_of_the_champion();
+extern void AddSC_northrend_beasts();                      //Crusaders' Coliseum, trial_of_the_crusader
+extern void AddSC_boss_jaraxxus();
+extern void AddSC_boss_anubarak_trial();
+extern void AddSC_twin_valkyr();
+extern void AddSC_instance_trial_of_the_crusader();
 
 extern void AddSC_borean_tundra();
 extern void AddSC_dalaran();
@@ -775,6 +780,12 @@ void AddScripts()
     AddSC_boss_grand_champions();
     AddSC_instance_trial_of_the_champion();
     AddSC_trial_of_the_champion();
+	AddSC_instance_azjol_nerub();
+    AddSC_northrend_beasts();                               //Crusaders' Coliseum, trial_of_the_crusader
+    AddSC_boss_jaraxxus();
+    AddSC_boss_anubarak_trial();
+    AddSC_twin_valkyr();
+    AddSC_instance_trial_of_the_crusader();
 
     AddSC_borean_tundra();
     AddSC_dalaran();
