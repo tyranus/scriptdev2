@@ -712,7 +712,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                 return;
 
             for(std::list<uint64>::iterator itr = m_lDiscGUIDList.begin(); itr != m_lDiscGUIDList.end(); ++itr)
-                if(Vehicle *pVehicle = pMap->GetVehicle(*itr))
+			    if(Vehicle *pVehicle = pMap->GetVehicle(*itr));
                     pVehicle->Dismiss();
 
             m_lDiscGUIDList.clear();
@@ -733,9 +733,9 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
     void SendDeepBreathCast()
     {
         WorldPacket data(SMSG_SPELL_GO, 50);
-        data.append(m_creature->GetPackGUID());
+        data << m_creature->GetPackGUID();
 
-        data.append(m_creature->GetPackGUID());
+        data << m_creature->GetPackGUID();
         data << uint8(1);
         data << uint32(SPELL_DEEP_BREATH);
         data << uint32(256);
