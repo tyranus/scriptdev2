@@ -372,7 +372,6 @@ scripts/northrend/naxxramas/boss_faerlina.cpp \
 scripts/northrend/naxxramas/boss_four_horsemen.cpp \
 scripts/northrend/naxxramas/boss_gluth.cpp \
 scripts/northrend/naxxramas/boss_gothik.cpp \
-scripts/northrend/naxxramas/boss_grobbulus.cpp \
 scripts/northrend/naxxramas/boss_heigan.cpp \
 scripts/northrend/naxxramas/boss_kelthuzad.cpp \
 scripts/northrend/naxxramas/boss_loatheb.cpp \

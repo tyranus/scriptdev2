@@ -22,7 +22,6 @@ enum
     TYPE_FOUR_HORSEMEN          = 9,
 
     TYPE_PATCHWERK              = 10,
-    TYPE_GROBBULUS              = 11,
     TYPE_GLUTH                  = 12,
     TYPE_THADDIUS               = 13,
     TYPE_STALAGG                = 14,
