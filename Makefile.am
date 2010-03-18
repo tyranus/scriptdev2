@@ -323,7 +323,7 @@ scripts/northrend/azjol-nerub/azjol-nerub/boss_anubarak.cpp \
 scripts/northrend/azjol-nerub/azjol-nerub/boss_hadronox.cpp \
 scripts/northrend/azjol-nerub/azjol-nerub/boss_krikthir.cpp \
 scripts/northrend/azjol-nerub/azjol-nerub/instance_azjol-nerub.cpp \
-scripts/northrend/crusaders_coliseum/trial_of_the_crusader/boss_anubarak.cpp \
+scripts/northrend/crusaders_coliseum/trial_of_the_crusader/boss_anubarak_trial.cpp \
 scripts/northrend/crusaders_coliseum/trial_of_the_crusader/boss_faction_champions.cpp \
 scripts/northrend/crusaders_coliseum/trial_of_the_crusader/boss_jaraxxus.cpp \
 scripts/northrend/crusaders_coliseum/trial_of_the_crusader/boss_northrend_beasts.cpp \
@@ -384,6 +384,7 @@ scripts/northrend/naxxramas/boss_sapphiron.cpp \
 scripts/northrend/naxxramas/boss_thaddius.cpp \
 scripts/northrend/naxxramas/naxxramas.h \
 scripts/northrend/naxxramas/instance_naxxramas.cpp \
+scripts/northrend/nexus/eye_of_eternity/instance_eye_of_eternity.cpp \
 scripts/northrend/nexus/nexus/boss_anomalus.cpp \
 scripts/northrend/nexus/nexus/boss_keristrasza.cpp \
 scripts/northrend/nexus/nexus/boss_ormorok.cpp \
