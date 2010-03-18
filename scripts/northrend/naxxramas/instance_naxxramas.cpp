@@ -337,9 +337,6 @@ void instance_naxxramas::SetData(uint32 uiType, uint32 uiData)
             if (uiData == DONE)
                 DoUseDoorOrButton(m_uiPathExitDoorGUID);
             break;
-        case TYPE_GROBBULUS:
-            m_auiEncounter[10] = uiData;
-            break;
         case TYPE_GLUTH:
             m_auiEncounter[11] = uiData;
             if (uiData == DONE)
@@ -465,8 +462,6 @@ uint32 instance_naxxramas::GetData(uint32 uiType)
             return m_auiEncounter[8];
         case TYPE_PATCHWERK:
             return m_auiEncounter[9];
-        case TYPE_GROBBULUS:
-            return m_auiEncounter[10];
         case TYPE_GLUTH:
             return m_auiEncounter[11];
         case TYPE_THADDIUS:
