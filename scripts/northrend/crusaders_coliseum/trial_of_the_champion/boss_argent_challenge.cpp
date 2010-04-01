@@ -1,5 +1,5 @@
 /* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
-* This program is free software; you can redistribute it and/or modify
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -23,58 +23,81 @@ EndScriptData */
 
 #include "precompiled.h"
 #include "trial_of_the_champion.h"
+#include "TemporarySummon.h"
 
-enum
+enum Spells
 {
-    //yells
-
     //eadric
-    SPELL_VENGEANCE                = 66889,
-    SPELL_RADIANCE                = 66862,
+    SPELL_VENGEANCE             = 66889,
+    SPELL_RADIANCE              = 66862,
     SPELL_RADIANCE_H            = 67681,
-    SPELL_HAMMER_OF_JUSTICE        = 66940,
+    SPELL_HAMMER_OF_JUSTICE     = 66940,
     SPELL_HAMMER                = 67680,
     //paletress
-    SPELL_SMITE                    = 66536,
-    SPELL_SMITE_H                = 67674,
-    SPELL_HOLY_FIRE                = 66538,
-    SPELL_HOLY_FIRE_H            = 67676,
-    SPELL_RENEW                    = 66537,
-    SPELL_RENEW_H                = 67675,
-    SPELL_HOLY_NOVA                = 66546,
+    SPELL_SMITE                 = 66536,
+    SPELL_SMITE_H               = 67674,
+    SPELL_HOLY_FIRE             = 66538,
+    SPELL_HOLY_FIRE_H           = 67676,
+    SPELL_RENEW                 = 66537,
+    SPELL_RENEW_H               = 67675,
+    SPELL_HOLY_NOVA             = 66546,
     SPELL_SHIELD                = 66515,
-    SPELL_CONFESS                = 66547,
+    SPELL_CONFESS               = 66547,
     //memory
-    SPELL_FEAR                    = 66552,
+    SPELL_FEAR                  = 66552,
     SPELL_FEAR_H                = 67677,
-    SPELL_SHADOWS                = 66619,
-    SPELL_SHADOWS_H                = 67678,
+    SPELL_SHADOWS               = 66619,
+    SPELL_SHADOWS_H             = 67678,
     SPELL_OLD_WOUNDS            = 66620,
-    SPELL_OLD_WOUNDS_H            = 67679,
+    SPELL_OLD_WOUNDS_H          = 67679,
+};
+
+static const uint32 MemorySummons[MAX_MEMORY] = {
+    MEMORY_ALGALON,
+    MEMORY_ARCHIMONDE,
+    MEMORY_CHROMAGGUS,
+    MEMORY_CYANIGOSA,
+    MEMORY_DELRISSA,
+    MEMORY_ECK,
+    MEMORY_ENTROPIUS,
+    MEMORY_GRUUL,
+    MEMORY_HAKKAR,
+    MEMORY_HEIGAN,
+    MEMORY_HEROD,
+    MEMORY_HOGGER,
+    MEMORY_IGNIS,
+    MEMORY_ILLIDAN,
+    MEMORY_INGVAR,
+    MEMORY_KALITHRESH,
+    MEMORY_LUCIFRON,
+    MEMORY_MALCHEZAAR,
+    MEMORY_MUTANUS,
+    MEMORY_ONYXIA,
+    MEMORY_THUNDERAAN,
+    MEMORY_VANCLEEF,
+    MEMORY_VASHJ,
+    MEMORY_VEKNILASH,
+    MEMORY_VEZAX
 };
 
 // Eadric The Pure
-struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_eadricAI: public boss_trial_of_the_championAI
 {
-    boss_eadricAI(Creature* pCreature) : ScriptedAI(pCreature)
-    {
-        Reset();
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-    }
-
-    ScriptedInstance* m_pInstance;
-    bool m_bIsRegularMode;
-
     uint32 Vengeance_Timer;
     uint32 Radiance_Timer;
     uint32 Hammer_Timer;
     uint32 Hammer_Dmg_Timer;
-    
+
     uint64 HammerTarget;
+
+    boss_eadricAI(Creature* pCreature):
+        boss_trial_of_the_championAI(pCreature)
+    {
+        Reset();
+    }
 
     void Reset()
     {
-        m_creature->SetRespawnDelay(999999999);
         Vengeance_Timer = 1000;
         Radiance_Timer = 15000;
         Hammer_Timer = 40000;
@@ -82,20 +105,7 @@ struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
         HammerTarget = 0;
     }
 
-    void EnterEvadeMode()
-    {
-        Vengeance_Timer = 1000;
-        Radiance_Timer = 15000;
-        Hammer_Timer = 40000;
-        Hammer_Dmg_Timer = 45000;
-        HammerTarget = 0;
-        m_creature->RemoveArenaAuras(true);
-        m_creature->SendMonsterMove(746.864441, 660.918762, 411.695465, SPLINETYPE_NORMAL, m_creature->GetSplineFlags(), 1);
-        m_creature->GetMap()->CreatureRelocation(m_creature, 754.360779, 660.816162, 412.395996, 4.698700);
-        m_creature->SetHealth(m_creature->GetMaxHealth());
-    }
-
-    void Aggro(Unit* pWho)
+    void Aggro(Unit *pWho)
     {
         if (!m_pInstance)
             return;
@@ -105,12 +115,11 @@ struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
             m_pInstance->SetData(TYPE_ARGENT_CHALLENGE, IN_PROGRESS);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit *pKiller)
     {
-        if (!m_pInstance)
-            return;
-        m_creature->ForcedDespawn();
-        m_pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
+        static_cast<TemporarySummon*>(m_creature)->UnSummon();
+        if (m_pInstance)
+            m_pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
     }
 
     void UpdateAI(const uint32 diff)
@@ -122,78 +131,62 @@ struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
         {
             DoCast(m_creature, SPELL_VENGEANCE);
             Vengeance_Timer = 12000;
-        }else Vengeance_Timer -= diff;  
+        }
+        else
+            Vengeance_Timer -= diff;  
 
         if (Radiance_Timer < diff)
         {
-            DoCast(m_creature, m_bIsRegularMode ? SPELL_RADIANCE : SPELL_RADIANCE_H);
+            DoCast(m_creature, DIFFICULTY(SPELL_RADIANCE));
             Radiance_Timer = 20000;
-        }else Radiance_Timer -= diff;
+        }
+        else
+            Radiance_Timer -= diff;
 
         if (Hammer_Timer < diff)
         {
-            if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+            if (Player *target = SelectRandomPlayer())
             {
                 DoCast(target, SPELL_HAMMER_OF_JUSTICE);
                 HammerTarget = target->GetGUID();
             }
             Hammer_Timer = 50000;
-        }else Hammer_Timer -= diff;
+        }
+        else
+            Hammer_Timer -= diff;
 
         if (Hammer_Dmg_Timer < diff)
         {
-            if (Unit* pHammerTarget = Unit::GetUnit(*m_creature, HammerTarget))
+            if (Unit *pHammerTarget = Unit::GetUnit(*m_creature, HammerTarget))
                 DoCast(pHammerTarget, SPELL_HAMMER);
             Hammer_Dmg_Timer = 50000;
         }
         else Hammer_Dmg_Timer -= diff;
-        
+
         DoMeleeAttackIfReady();
     }
 };
 
-CreatureAI* GetAI_boss_eadric(Creature* pCreature)
-{
-    return new boss_eadricAI(pCreature);
-}
-
 // Argent Confessor Paletress
-struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_paletressAI: public boss_trial_of_the_championAI
 {
-    boss_paletressAI(Creature* pCreature) : ScriptedAI(pCreature)
-    {
-        Reset();
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-    }
-
-    ScriptedInstance* m_pInstance;
-    bool m_bIsRegularMode;
-
     uint32 Smite_Timer;
     uint32 Holy_Fire_Timer;
     uint32 Renew_Timer;
     uint32 Shield_Delay;
     uint32 Shield_Check;
-    
+
     bool summoned;
     bool shielded;
 
-    void Reset()
+    boss_paletressAI(Creature* pCreature):
+        boss_trial_of_the_championAI(pCreature)
     {
-        m_creature->SetRespawnDelay(999999999);
-        m_creature->RemoveAurasDueToSpell(SPELL_SHIELD);
-        Smite_Timer = 5000;
-        Holy_Fire_Timer = 10000;
-        Renew_Timer = 7000;
-        Shield_Delay = 0;
-        Shield_Check = 1000;
-        summoned = false;
-        shielded = false;
+        Reset();
     }
 
-    void EnterEvadeMode()
+    void Reset()
     {
-        m_creature->RemoveAurasDueToSpell(SPELL_SHIELD);
         Smite_Timer = 5000;
         Holy_Fire_Timer = 10000;
         Renew_Timer = 7000;
@@ -201,10 +194,7 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
         Shield_Check = 1000;
         summoned = false;
         shielded = false;
-        m_creature->RemoveArenaAuras(true);
-        m_creature->SendMonsterMove(746.864441, 660.918762, 411.695465, SPLINETYPE_NORMAL, m_creature->GetSplineFlags(), 1);
-        m_creature->GetMap()->CreatureRelocation(m_creature, 754.360779, 660.816162, 412.395996, 4.698700);
-        m_creature->SetHealth(m_creature->GetMaxHealth());
+        m_creature->RemoveAurasDueToSpell(SPELL_SHIELD);
     }
 
     void Aggro(Unit* pWho)
@@ -219,10 +209,9 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
 
     void JustDied(Unit* pKiller)
     {
-        if (!m_pInstance)
-            return;
-        m_creature->ForcedDespawn();
-        m_pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
+        static_cast<TemporarySummon*>(m_creature)->UnSummon();
+        if (m_pInstance)
+            m_pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
     }
 
     void UpdateAI(const uint32 diff)
@@ -232,269 +221,100 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
 
         if (Smite_Timer < diff)
         {
-            if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                DoCast(target, m_bIsRegularMode ? SPELL_SMITE : SPELL_SMITE_H);
+            if (Player* target = SelectRandomPlayer())
+                DoCast(target, DIFFICULTY(SPELL_SMITE));
             Smite_Timer = 2000;
-        }else Smite_Timer -= diff;  
+        }
+        else
+            Smite_Timer -= diff;  
 
         if (Holy_Fire_Timer < diff)
         {
-            m_creature->CastStop(m_bIsRegularMode ? SPELL_SMITE : SPELL_SMITE_H);
-            if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                DoCast(target, m_bIsRegularMode ? SPELL_HOLY_FIRE : SPELL_HOLY_FIRE_H);
+            m_creature->InterruptNonMeleeSpells(true);
+            if (Player *target = SelectRandomPlayer())
+                DoCast(target, DIFFICULTY(SPELL_HOLY_FIRE));
             Holy_Fire_Timer = 10000;
-        }else Holy_Fire_Timer -= diff;
+        }
+        else
+            Holy_Fire_Timer -= diff;
 
         if (Renew_Timer < diff)
         {
-            m_creature->CastStop(m_bIsRegularMode ? SPELL_SMITE : SPELL_SMITE_H);
-            m_creature->CastStop(m_bIsRegularMode ? SPELL_HOLY_FIRE : SPELL_HOLY_FIRE_H);
+            m_creature->InterruptNonMeleeSpells(true);
             switch(urand(0, 1))
             {
                 case 0:
-                    if (Creature* pTemp = ((Creature*)Unit::GetUnit((*m_creature), m_pInstance->GetData64(DATA_MEMORY))))
+                    if (Creature *pTemp = GET_CREATURE(DATA_MEMORY))
+                    {
                         if (pTemp->isAlive())
-                            DoCast(pTemp, m_bIsRegularMode ? SPELL_RENEW : SPELL_RENEW_H);
+                            DoCast(pTemp, DIFFICULTY(SPELL_RENEW));
                         else
-                            DoCast(pTemp, m_bIsRegularMode ? SPELL_RENEW : SPELL_RENEW_H);
-                break;
+                            DoCast(m_creature, DIFFICULTY(SPELL_RENEW));
+                    }
+                    break;
                 case 1:
-                    DoCast(m_creature, m_bIsRegularMode ? SPELL_RENEW : SPELL_RENEW_H);
-                break;
+                    DoCast(m_creature, DIFFICULTY(SPELL_RENEW));
+                    break;
             }
             Renew_Timer = 25000;
-        }else Renew_Timer -= diff;
+        }
+        else
+            Renew_Timer -= diff;
 
-        if ((m_creature->GetHealth()*100 / m_creature->GetMaxHealth()) < 35 && !summoned)
+        if (!summoned && m_creature->GetHealthPercent() < 35.0f)
         {
-            m_creature->CastStop(m_bIsRegularMode ? SPELL_SMITE : SPELL_SMITE_H);
-            m_creature->CastStop(m_bIsRegularMode ? SPELL_HOLY_FIRE : SPELL_HOLY_FIRE_H);
+            m_creature->InterruptNonMeleeSpells(true);
             DoCast(m_creature, SPELL_HOLY_NOVA);
-            switch(urand(0, 24))
+            if (Creature *pSummon = DoSpawnCreature(MemorySummons[urand(0, MAX_MEMORY-1)], 0, 0, 0, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 3000))
             {
-                case 0:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_ALGALON, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 1:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_CHROMAGGUS, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 2:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_CYANIGOSA, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 3:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_DELRISSA, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 4:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_ECK, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 5:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_ENTROPIUS, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 6:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_GRUUL, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 7:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_HAKKAR, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 8:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_HEIGAN, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 9:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_HEROD, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 10:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_HOGGER, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 11:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_IGNIS, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 12:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_ILLIDAN, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 13:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_INGVAR, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 14:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_KALITHRESH, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 15:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_LUCIFRON, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 16:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_MALCHEZAAR, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 17:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_MUTANUS, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 18:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_ONYXIA, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 19:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_THUNDERAAN, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 20:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_VANCLEEF, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 21:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_VASHJ, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 22:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_VEKNILASH, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 23:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_VEZAX, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
-                case 24:
-                    if (Creature* pTemp = m_creature->SummonCreature(MEMORY_ARCHIMONDE, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                    {
-                        pTemp->AddThreat(m_creature->getVictim(),1000.0f);
-                        pTemp->AI()->AttackStart(m_creature->getVictim());
-                    }
-                break;
+                pSummon->AddThreat(m_creature->getVictim());
+                if (pSummon->AI())
+                    pSummon->AI()->AttackStart(m_creature->getVictim());
+                summoned = true;
             }
-            summoned = true;
             Shield_Delay = 1000;
         }
 
         if (Shield_Delay < diff && !shielded && summoned)
         {
-            m_creature->CastStop(m_bIsRegularMode ? SPELL_SMITE : SPELL_SMITE_H);
-            m_creature->CastStop(m_bIsRegularMode ? SPELL_HOLY_FIRE : SPELL_HOLY_FIRE_H);
+            m_creature->InterruptNonMeleeSpells(true);
             DoCast(m_creature, SPELL_SHIELD);
             shielded = true;
             Shield_Check = 1000;
-        }else Shield_Delay -= diff;
+        }
+        else
+            Shield_Delay -= diff;
 
         if (Shield_Check < diff && shielded)
         {
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*m_creature), m_pInstance->GetData64(DATA_MEMORY))))
+            if (Creature *pTemp = GET_CREATURE(DATA_MEMORY))
                 if (!pTemp->isAlive())
                 {
                     m_creature->RemoveAurasDueToSpell(SPELL_SHIELD);
                     shielded = false;
-                }else Shield_Check = 1000;
-        }else Shield_Check -= diff;
-        
+                }
+                else
+                    Shield_Check = 1000;
+        }
+        else
+            Shield_Check -= diff;
+
         DoMeleeAttackIfReady();
     }
 };
 
-CreatureAI* GetAI_boss_paletress(Creature* pCreature)
-{
-    return new boss_paletressAI(pCreature);
-}
-
 // Summoned Memory
-struct MANGOS_DLL_DECL mob_toc5_memoryAI : public ScriptedAI
+struct MANGOS_DLL_DECL mob_toc5_memoryAI: public boss_trial_of_the_championAI
 {
-    mob_toc5_memoryAI(Creature* pCreature) : ScriptedAI(pCreature)
-    {
-        Reset();
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-    }
-
-    ScriptedInstance* m_pInstance;
-    bool m_bIsRegularMode;
-
     uint32 Old_Wounds_Timer;
     uint32 Shadows_Timer;
     uint32 Fear_Timer;
+
+    mob_toc5_memoryAI(Creature* pCreature):
+        boss_trial_of_the_championAI(pCreature)
+    {
+        Reset();
+    }
 
     void Reset()
     {
@@ -510,49 +330,39 @@ struct MANGOS_DLL_DECL mob_toc5_memoryAI : public ScriptedAI
 
         if (Old_Wounds_Timer < diff)
         {
-            if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                DoCast(target, m_bIsRegularMode ? SPELL_OLD_WOUNDS : SPELL_OLD_WOUNDS_H);
+            if (Player* target = SelectRandomPlayer())
+                DoCast(target, DIFFICULTY(SPELL_OLD_WOUNDS));
             Old_Wounds_Timer = 10000;
-        }else Old_Wounds_Timer -= diff;  
+        }
+        else
+            Old_Wounds_Timer -= diff;  
 
         if (Fear_Timer < diff)
         {
-            DoCast(m_creature, m_bIsRegularMode ? SPELL_FEAR : SPELL_FEAR_H);
+            DoCast(m_creature, DIFFICULTY(SPELL_FEAR));
             Fear_Timer = 40000;
-        }else Fear_Timer -= diff; 
+        }
+        else
+            Fear_Timer -= diff; 
 
         if (Shadows_Timer < diff)
         {
-            if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,1))
-                DoCast(target, m_bIsRegularMode ? SPELL_SHADOWS : SPELL_SHADOWS_H);
+            if (Player* target = SelectRandomPlayer())
+                DoCast(target, DIFFICULTY(SPELL_SHADOWS));
             Shadows_Timer = 10000;
-        }else Shadows_Timer -= diff; 
-        
+        }
+        else
+            Shadows_Timer -= diff; 
+
         DoMeleeAttackIfReady();
     }
 };
 
-CreatureAI* GetAI_mob_toc5_memory(Creature* pCreature)
-{
-    return new mob_toc5_memoryAI(pCreature);
-}
-
 void AddSC_boss_argent_challenge()
 {
-    Script* NewScript;
+    Script *NewScript;
 
-    NewScript = new Script;
-    NewScript->Name = "boss_eadric";
-    NewScript->GetAI = &GetAI_boss_eadric;
-    NewScript->RegisterSelf();
-
-    NewScript = new Script;
-    NewScript->Name = "boss_paletress";
-    NewScript->GetAI = &GetAI_boss_paletress;
-    NewScript->RegisterSelf();
-
-    NewScript = new Script;
-    NewScript->Name = "mob_toc5_memory";
-    NewScript->GetAI = &GetAI_mob_toc5_memory;
-    NewScript->RegisterSelf();
+    REGISTER_SCRIPT(boss_eadric);
+    REGISTER_SCRIPT(boss_paletress);
+    REGISTER_SCRIPT(mob_toc5_memory);
 }
