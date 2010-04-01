@@ -8,6 +8,8 @@
 extern void AddSC_battleground();
 
 //custom
+extern void AddSC_gmvendor();
+extern void AddSC_telenpc();
 
 //examples
 extern void AddSC_example_creature();
@@ -444,6 +446,8 @@ void AddScripts()
     AddSC_battleground();
 
     //custom
+    AddSC_gmvendor();
+    AddSC_telenpc();
 
     //examples
     AddSC_example_creature();
