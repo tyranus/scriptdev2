@@ -37,7 +37,7 @@ enum
     SPELL_IMPALE_DMG_N                      = 58666,
     SPELL_IMPALE_DMG_H                      = 60882,
     SPELL_IMPALE_STUN                       = 50839,
-    SPELL_BERSERK                           = 47008
+    SPELL_BERSERK                           = 54312
 };
 
 struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
