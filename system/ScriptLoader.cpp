@@ -751,7 +751,7 @@ void AddScripts()
     AddSC_boss_algalon();                                   //ulduar
     AddSC_boss_asembly_of_iron();
     AddSC_boss_auriaya();
-    AddSC_boss_leviatan();
+    AddSC_boss_leviathan();
     AddSC_boss_freya();
     AddSC_boss_vezax();
     AddSC_boss_hodir();
