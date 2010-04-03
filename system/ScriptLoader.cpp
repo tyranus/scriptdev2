@@ -315,7 +315,7 @@ extern void AddSC_instance_halls_of_stone();
 extern void AddSC_boss_algalon();                           //ulduar
 extern void AddSC_boss_asembly_of_iron();
 extern void AddSC_boss_auriaya();
-extern void AddSC_boss_leviatan();
+extern void AddSC_boss_leviathan();
 extern void AddSC_boss_freya();
 extern void AddSC_boss_vezax();
 extern void AddSC_boss_hodir();
